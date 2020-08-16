@@ -1,0 +1,195 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Список банковских карт</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Список банковских карт</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.0/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/all.min.css" rel="stylesheet" />
+    <link href="css/fontawesome.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="cardInfo" style="display:none;">
+   
+
+        <h1 align="center">Список банковских карт</h1>
+        <hr align="center" width="500" size="2" color="#ff0000" />
+        <p></p>
+        <table align="right" class="table table-condensed table-striped  col-md-6 ">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Владелец</th>
+                    <th>Номер карточки</th>
+                    <th>Срок</th>
+                    <th>CVV</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+        <div id="errors" class="alert alert-danger" style="display:none;"></div>
+        <form name="cardForm">
+            <input type="hidden" name="id" value="0" />
+
+            <div class="form-group col-md-5">
+                <label>Введите информацию о карте:</label>
+                <input class="form-control" name="owner" id="owner" placeholder="Имя владельца карты" />
+            </div>
+            <div class="form-group col-md-5">
+
+                <input class="form-control" name="number" id="number" placeholder="номер карточки" />
+            </div>
+            <div class="form-group col-md-2">
+                <input class="form-control" name="term" id="term" placeholder="MM/YY" />
+            </div>
+            <div class="form-group  col-md-2">
+                <input class="form-control" name="cvv" id="cvv" placeholder="CVV" />
+            </div>
+            <div class="panel-body">
+                <button type="submit" id="submit" style="width:650px;"
+                        class="btn btn-success"
+                        back>
+                    Сохранить
+                </button>
+            </div>
+            <p>Вы вошли как: <span id="cardName"></span></p>
+            <button type="button" class="btn btn-danger" id="logOut">Выйти</button>
+
+             <a href="/swagger/index.html" class="btn btn-primary">Ссылка на документацию</a>
+        </form>
+
+    </div>
+
+    <div id="loginForm">
+        <form >
+            <input type="hidden" name="id" value="0" />
+            <div class="form-group col-md-5 ">
+                <h1>Авторизация</h1>
+                <label>Email адресс</label>
+                <input class="form-control" type="email" id="emailLogin" placeholder="Введите email" />
+            </div>
+            <div class="form-group col-md-5">
+                <label>Пароль:</label>
+                <input class="form-control" type="password" id="passwordLogin" placeholder="Введите пароль" />
+            </div>
+
+            <div class="form-check fa-align-center ">
+                <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                <label class="form-check-label" for="exampleCheck1">Запомнить</label>
+            </div>
+
+            <div class="panel-body">
+                <button type="submit" id="submitLogin" style="width:650px;"
+                        class="btn btn-success"
+                        back>
+                    Войти
+                </button>
+            </div>
+
+
+        </form>
+    </div>
+
+
+    <script>
+        var tokenKey = "accessToken";
+
+        // отпавка запроса к контроллеру AccountController для получения токена
+        async function getTokenAsync() {
+
+            // получаем данные формы и фомируем объект для отправки
+            const formData = new FormData();
+            formData.append("grant_type", "password");
+            formData.append("cardname", document.getElementById("emailLogin").value);
+            formData.append("password", document.getElementById("passwordLogin").value);
+
+            // отправляет запрос и получаем ответ
+            const response = await fetch("/token", {
+                method: "POST",
+                headers: { "Accept": "application/json" },
+                body: formData
+            });
+            // получаем данные
+            const data = await response.json();
+
+            // если запрос прошел нормально
+            if (response.ok === true) {
+
+                // изменяем содержимое и видимость блоков на странице
+                document.getElementById("cardName").innerText = data.cardname;
+                document.getElementById("cardInfo").style.display = "block";
+                document.getElementById("loginForm").style.display = "none";
+                // сохраняем в хранилище sessionStorage токен доступа
+                sessionStorage.setItem(tokenKey, data.access_token);
+                console.log(data.access_token);
+            }
+            else {
+                // если произошла ошибка, из errorText получаем текст ошибки
+                console.log("Error: ", response.status, data.errorText);
+            }
+        };
+        // отправка запроса к контроллеру ValuesController
+        async function getData(url) {
+            const token = sessionStorage.getItem(tokenKey);
+
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json",
+                    "Authorization": "Bearer " + token  // передача токена в заголовке
+                }
+            });
+            if (response.ok === true) {
+
+                const data = await response.json();
+                alert(data)
+            }
+            else
+                console.log("Status: ", response.status);
+        };
+
+        // получаем токен
+        document.getElementById("submitLogin").addEventListener("click", e => {
+
+            e.preventDefault();
+            getTokenAsync();
+        });
+
+        // условный выход - просто удаляем токен и меняем видимость блоков
+        document.getElementById("logOut").addEventListener("click", e => {
+
+            e.preventDefault();
+            document.getElementById("cardName").innerText = "";
+            document.getElementById("cardInfo").style.display = "none";
+            document.getElementById("loginForm").style.display = "block";
+            sessionStorage.removeItem(tokenKey);
+        });
+
+    </script>
+
+                  <!--LIST OF CARD-->
+
+    <script src="jquery/jquery.js"></script>
+    <script src="jquery/jquery.maskedinput.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#number").mask("9999 9999 9999 9999");
+        });
+        $(document).ready(function () {
+            $("#term").mask("99/99");
+        });
+        $(document).ready(function () {
+            $("#cvv").mask("999");
+        });
+    </script>
+
+    <script src="script.js"></script>
+
+
+</body>
+</html>

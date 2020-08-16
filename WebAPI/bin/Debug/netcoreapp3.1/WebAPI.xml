@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WebAPI</name>
+    </assembly>
+    <members>
+        <member name="M:WebAPI.Controllers.AccountController.Token(System.String,System.String)">
+            <summary>
+             token autorize to app
+            </summary>
+            <param name="cardname"></param>
+            <param name="password"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebAPIApp.Controllers.CardsController.Get">
+            <summary>
+            Get all catds
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebAPIApp.Controllers.CardsController.Get(System.Int32)">
+            <summary>
+            Get card to specific id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebAPIApp.Controllers.CardsController.Post(WebAPI.Models.Card)">
+            <summary>
+            Post card to objedct card
+            </summary>
+            <param name="card"></param>
+        </member>
+        <member name="M:WebAPIApp.Controllers.CardsController.Put(WebAPI.Models.Card)">
+            <summary>
+            put card to Object card
+            </summary>
+            <param name="card"></param>
+        </member>
+        <member name="M:WebAPIApp.Controllers.CardsController.Delete(System.Int32)">
+            <summary>
+            Delete card to speciic item
+            </summary>
+            <param name="id"></param>
+        </member>
+    </members>
+</doc>

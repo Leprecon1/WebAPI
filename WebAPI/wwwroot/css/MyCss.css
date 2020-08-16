@@ -1,0 +1,18 @@
+﻿input {
+	height: 20px;
+}
+
+i.fa {
+	width: 26px;
+	height: 26px;
+	line-height: 26px;
+	text-align: center;
+	margin-right: -26px;
+	position: relative;
+	z-index: 1;
+	float: left;
+}
+
+	i.fa + input {
+		padding-left: 26px;
+	}
